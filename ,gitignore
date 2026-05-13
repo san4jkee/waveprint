@@ -1,3 +1,10 @@
 # Игнорировать каталоги с данными
 outputs/
 uploads/
+
+*.webp
+*.png
+*.jpg
+*.jpeg
+*.gif
+*.svg
