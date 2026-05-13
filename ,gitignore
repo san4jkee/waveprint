@@ -1,2 +1,3 @@
-/outputs/
-/uploads/
+# Игнорировать каталоги с данными
+outputs/
+uploads/
