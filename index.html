@@ -2,316 +2,266 @@
 <html lang="ru">
 <head>
 <meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>WAVE print</title>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>WAWE print</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500&display=swap"/>
 <style>
-/* ─── Reset ─────────────────────────────────────────────────────────────── */
+/* ─── Reset ──────────────────────────────────────────────────────────── */
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html,body{height:100%;overflow:hidden}
 
-/* ─── Variables ─────────────────────────────────────────────────────────── */
+/* ─── Vars ───────────────────────────────────────────────────────────── */
 :root{
-  --bg:#0e0e10;--surf:#18181c;--surf2:#222228;--border:#2e2e38;
-  --accent:#c8f050;--accent2:#50c8f0;--text:#e8e8ee;--muted:#8888a0;
-  --danger:#f05050;--r:10px;
+  --bg:#0e0e10;--surf:#18181c;--surf2:#222228;--brd:#2e2e38;
+  --acc:#c8f050;--acc2:#50c8f0;--txt:#e8e8ee;--mut:#8888a0;
+  --err:#f05050;--r:10px;
   --mono:'Space Mono','Courier New',monospace;
   --sans:'DM Sans',system-ui,-apple-system,sans-serif;
+  --aside-w:320px;
 }
 
-/* ─── Layout ─────────────────────────────────────────────────────────────── */
-body{
-  font-family:var(--sans);background:var(--bg);color:var(--text);
+/* ─── Layout ─────────────────────────────────────────────────────────── */
+body{font-family:var(--sans);background:var(--bg);color:var(--txt);
   display:-webkit-box;display:-ms-flexbox;display:flex;
   -webkit-box-orient:vertical;-webkit-box-direction:normal;
-  -ms-flex-direction:column;flex-direction:column;
-}
+  -ms-flex-direction:column;flex-direction:column}
 
 .app-row{
   -webkit-box-flex:1;-ms-flex:1;flex:1;
   display:-webkit-box;display:-ms-flexbox;display:flex;
-  min-height:0;overflow:hidden;
-}
+  min-height:0;overflow:hidden;position:relative}
 
-/* ─── Header ─────────────────────────────────────────────────────────────── */
+/* ─── Header ─────────────────────────────────────────────────────────── */
 header{
   display:-webkit-box;display:-ms-flexbox;display:flex;
   -webkit-box-align:center;-ms-flex-align:center;align-items:center;
-  gap:14px;padding:0 24px;height:56px;
-  border-bottom:1px solid var(--border);background:var(--surf);
-  -ms-flex-negative:0;flex-shrink:0;
-}
-.logo{font-family:var(--mono);font-size:15px;letter-spacing:.06em;color:var(--accent)}
-.logo span{color:var(--muted)}
-.badge{
-  font-size:10px;font-family:var(--mono);background:var(--surf2);
-  border:1px solid var(--border);color:var(--muted);
-  padding:2px 8px;border-radius:100px;letter-spacing:.08em;
-}
+  gap:12px;padding:0 16px;height:52px;
+  border-bottom:1px solid var(--brd);background:var(--surf);
+  -ms-flex-negative:0;flex-shrink:0;z-index:20;position:relative}
+.logo{font-family:var(--mono);font-size:14px;letter-spacing:.06em;color:var(--acc)}
+.logo span{color:var(--mut)}
+.badge{font-size:10px;font-family:var(--mono);background:var(--surf2);
+  border:1px solid var(--brd);color:var(--mut);
+  padding:2px 7px;border-radius:100px;letter-spacing:.08em}
+
+/* Mobile menu toggle (hidden on desktop) */
+.menu-btn{
+  display:none;margin-left:auto;
+  background:none;border:1px solid var(--brd);border-radius:6px;
+  color:var(--mut);padding:5px 10px;cursor:pointer;font-size:16px;line-height:1}
+.menu-btn:hover{border-color:var(--acc);color:var(--acc)}
+
 .hd-status{
   margin-left:auto;
   display:-webkit-box;display:-ms-flexbox;display:flex;
   -webkit-box-align:center;-ms-flex-align:center;align-items:center;
-  gap:6px;font-size:11px;font-family:var(--mono);color:var(--muted);
-}
-.dot{width:7px;height:7px;border-radius:50%;background:var(--muted);
+  gap:6px;font-size:11px;font-family:var(--mono);color:var(--mut)}
+.dot{width:7px;height:7px;border-radius:50%;background:var(--mut);
   -webkit-transition:background .3s;transition:background .3s}
-.dot.ok{background:var(--accent)}
-.dot.err{background:var(--danger)}
+.dot.ok{background:var(--acc)}.dot.err{background:var(--err)}
 
-/* ─── Sidebar ────────────────────────────────────────────────────────────── */
+/* ─── Overlay backdrop (mobile) ──────────────────────────────────────── */
+.backdrop{
+  display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);
+  z-index:29;-webkit-tap-highlight-color:transparent}
+.backdrop.show{display:block}
+
+/* ─── Sidebar ────────────────────────────────────────────────────────── */
 aside{
-  width:340px;-ms-flex-negative:0;flex-shrink:0;
-  background:var(--surf);border-right:1px solid var(--border);
-  overflow-y:auto;padding:18px 14px;
+  width:var(--aside-w);-ms-flex-negative:0;flex-shrink:0;
+  background:var(--surf);border-right:1px solid var(--brd);
+  overflow-y:auto;padding:16px 12px;
   display:-webkit-box;display:-ms-flexbox;display:flex;
   -webkit-box-orient:vertical;-webkit-box-direction:normal;
-  -ms-flex-direction:column;flex-direction:column;
-  gap:18px;
-}
-.slabel{
-  font-family:var(--mono);font-size:10px;letter-spacing:.12em;
-  color:var(--muted);text-transform:uppercase;margin-bottom:8px;
-}
+  -ms-flex-direction:column;flex-direction:column;gap:16px;
+  -webkit-transition:-webkit-transform .25s;transition:transform .25s;
+  z-index:30}
+
+/* ─── Main ───────────────────────────────────────────────────────────── */
+main{
+  -webkit-box-flex:1;-ms-flex:1;flex:1;min-width:0;
+  display:-webkit-box;display:-ms-flexbox;display:flex;
+  -webkit-box-orient:vertical;-webkit-box-direction:normal;
+  -ms-flex-direction:column;flex-direction:column;overflow:hidden}
+
+/* ─── Sidebar sections ───────────────────────────────────────────────── */
+.slabel{font-family:var(--mono);font-size:10px;letter-spacing:.12em;
+  color:var(--mut);text-transform:uppercase;margin-bottom:8px}
 
 /* Upload */
 .upload-zone{
-  border:1.5px dashed var(--border);border-radius:var(--r);
-  padding:22px 14px;text-align:center;cursor:pointer;position:relative;
-  -webkit-transition:border-color .2s,background .2s;transition:border-color .2s,background .2s;
-}
-.upload-zone:hover,.upload-zone.drag{border-color:var(--accent);background:rgba(200,240,80,.05)}
+  border:1.5px dashed var(--brd);border-radius:var(--r);
+  padding:20px 12px;text-align:center;cursor:pointer;position:relative;
+  -webkit-transition:border-color .2s,background .2s;transition:border-color .2s,background .2s}
+.upload-zone:hover,.upload-zone.drag{border-color:var(--acc);background:rgba(200,240,80,.05)}
 .upload-zone input{position:absolute;top:0;left:0;width:100%;height:100%;opacity:0;cursor:pointer}
-.upload-icon{font-size:26px;margin-bottom:6px}
-.upload-zone p{font-size:12px;color:var(--muted);line-height:1.5}
-.upload-zone strong{color:var(--text)}
-.thumb-wrap{display:none;border-radius:var(--r);overflow:hidden;border:1px solid var(--border);position:relative}
+.upload-icon{font-size:24px;margin-bottom:5px}
+.upload-zone p{font-size:12px;color:var(--mut);line-height:1.5}
+.upload-zone strong{color:var(--txt)}
+.thumb-wrap{display:none;border-radius:var(--r);overflow:hidden;border:1px solid var(--brd);position:relative}
 .thumb-wrap img{width:100%;display:block}
-.thumb-clear{
-  position:absolute;top:6px;right:6px;background:rgba(0,0,0,.6);color:#fff;
-  border:none;border-radius:50%;width:22px;height:22px;font-size:13px;
-  line-height:22px;text-align:center;cursor:pointer;
-}
+.thumb-clear{position:absolute;top:6px;right:6px;background:rgba(0,0,0,.6);color:#fff;
+  border:none;border-radius:50%;width:22px;height:22px;font-size:12px;
+  line-height:22px;text-align:center;cursor:pointer}
 
 /* Mode grid */
 .mode-grid{
   display:-ms-grid;display:grid;
-  -ms-grid-columns:1fr 6px 1fr;grid-template-columns:1fr 1fr;gap:6px;
-}
+  -ms-grid-columns:1fr 6px 1fr;grid-template-columns:1fr 1fr;gap:6px}
 .mode-btn{
-  background:var(--surf2);border:1px solid var(--border);border-radius:8px;
-  padding:10px 8px;cursor:pointer;text-align:left;
-  -webkit-transition:border-color .15s,background .15s;transition:border-color .15s,background .15s;
-}
-.mode-btn:hover{border-color:var(--muted)}
-.mode-btn.active{border-color:var(--accent);background:rgba(200,240,80,.08)}
-.mode-btn .mn{font-family:var(--mono);font-size:11px;color:var(--accent);display:block;margin-bottom:3px}
-.mode-btn .md{font-size:11px;color:var(--muted);line-height:1.4}
+  background:var(--surf2);border:1px solid var(--brd);border-radius:8px;
+  padding:9px 8px;cursor:pointer;text-align:left;
+  -webkit-transition:border-color .15s,background .15s;transition:border-color .15s,background .15s}
+.mode-btn:hover{border-color:var(--mut)}
+.mode-btn.active{border-color:var(--acc);background:rgba(200,240,80,.08)}
+.mode-btn .mn{font-family:var(--mono);font-size:10px;color:var(--acc);display:block;margin-bottom:2px}
+.mode-btn .md{font-size:10px;color:var(--mut);line-height:1.4}
 
 /* Params */
 #params-area{
   display:-webkit-box;display:-ms-flexbox;display:flex;
   -webkit-box-orient:vertical;-webkit-box-direction:normal;
-  -ms-flex-direction:column;flex-direction:column;gap:12px;
-}
-.param-row{
-  display:-webkit-box;display:-ms-flexbox;display:flex;
+  -ms-flex-direction:column;flex-direction:column;gap:10px}
+.param-row{display:-webkit-box;display:-ms-flexbox;display:flex;
   -webkit-box-orient:vertical;-webkit-box-direction:normal;
-  -ms-flex-direction:column;flex-direction:column;gap:4px;
-}
-.param-head{
-  display:-webkit-box;display:-ms-flexbox;display:flex;
+  -ms-flex-direction:column;flex-direction:column;gap:4px}
+.param-head{display:-webkit-box;display:-ms-flexbox;display:flex;
   -webkit-box-pack:justify;-ms-flex-pack:justify;justify-content:space-between;
-  -webkit-box-align:center;-ms-flex-align:center;align-items:center;font-size:12px;
-}
-.param-head label{color:var(--text);font-weight:500}
-.param-val{font-family:var(--mono);font-size:11px;color:var(--accent);min-width:34px;text-align:right}
-.param-tip{font-size:11px;color:var(--muted);line-height:1.4}
+  -webkit-box-align:center;-ms-flex-align:center;align-items:center;font-size:12px}
+.param-head label{color:var(--txt);font-weight:500}
+.param-val{font-family:var(--mono);font-size:11px;color:var(--acc);min-width:30px;text-align:right}
+.param-tip{font-size:10px;color:var(--mut);line-height:1.4}
 
-/* Range slider — all engines */
+/* Range */
 input[type=range]{
   -webkit-appearance:none;-moz-appearance:none;appearance:none;
-  width:100%;height:4px;border-radius:2px;
-  background:var(--surf2);outline:none;cursor:pointer;border:none;
-}
+  width:100%;height:4px;border-radius:2px;background:var(--surf2);
+  outline:none;cursor:pointer;border:none}
 input[type=range]::-webkit-slider-thumb{
-  -webkit-appearance:none;width:14px;height:14px;
-  border-radius:50%;background:var(--accent);cursor:pointer;border:none;
-}
+  -webkit-appearance:none;width:14px;height:14px;border-radius:50%;
+  background:var(--acc);cursor:pointer;border:none}
 input[type=range]::-moz-range-thumb{
-  width:14px;height:14px;border-radius:50%;
-  background:var(--accent);cursor:pointer;border:none;
-}
+  width:14px;height:14px;border-radius:50%;background:var(--acc);cursor:pointer;border:none}
 input[type=range]::-ms-thumb{
-  width:14px;height:14px;border-radius:50%;
-  background:var(--accent);cursor:pointer;border:none;
-}
+  width:14px;height:14px;border-radius:50%;background:var(--acc);cursor:pointer;border:none}
 input[type=range]::-ms-track{background:var(--surf2);border:none;color:transparent;height:4px}
 
 /* Toggle */
-.toggle-row{
-  display:-webkit-box;display:-ms-flexbox;display:flex;
+.toggle-row{display:-webkit-box;display:-ms-flexbox;display:flex;
   -webkit-box-pack:justify;-ms-flex-pack:justify;justify-content:space-between;
+  -webkit-box-align:center;-ms-flex-align:center;align-items:center}
+.toggle-wrap{display:-webkit-box;display:-ms-flexbox;display:flex;
   -webkit-box-align:center;-ms-flex-align:center;align-items:center;
-}
-.toggle-wrap{
-  display:-webkit-box;display:-ms-flexbox;display:flex;
-  -webkit-box-align:center;-ms-flex-align:center;align-items:center;
-  gap:8px;font-size:12px;color:var(--text);font-weight:500;
-}
-.toggle{
-  position:relative;width:34px;height:18px;background:var(--surf2);
-  border:1px solid var(--border);border-radius:9px;cursor:pointer;
+  gap:8px;font-size:12px;color:var(--txt);font-weight:500}
+.toggle{position:relative;width:34px;height:18px;background:var(--surf2);
+  border:1px solid var(--brd);border-radius:9px;cursor:pointer;
   -webkit-transition:background .2s,border-color .2s;transition:background .2s,border-color .2s;
-  -ms-flex-negative:0;flex-shrink:0;
-}
-.toggle.on{background:var(--accent);border-color:var(--accent)}
-.toggle::after{
-  content:'';position:absolute;top:2px;left:2px;
-  width:12px;height:12px;border-radius:50%;background:var(--muted);
-  -webkit-transition:-webkit-transform .2s,background .2s;transition:transform .2s,background .2s;
-}
+  -ms-flex-negative:0;flex-shrink:0}
+.toggle.on{background:var(--acc);border-color:var(--acc)}
+.toggle::after{content:'';position:absolute;top:2px;left:2px;
+  width:12px;height:12px;border-radius:50%;background:var(--mut);
+  -webkit-transition:-webkit-transform .2s,background .2s;transition:transform .2s,background .2s}
 .toggle.on::after{-webkit-transform:translateX(16px);transform:translateX(16px);background:var(--bg)}
 
-/* Process button */
+/* Process btn */
 .process-btn{
-  width:100%;padding:13px;background:var(--accent);color:var(--bg);
-  border:none;border-radius:var(--r);font-family:var(--mono);font-size:13px;
+  width:100%;padding:12px;background:var(--acc);color:var(--bg);
+  border:none;border-radius:var(--r);font-family:var(--mono);font-size:12px;
   font-weight:700;letter-spacing:.08em;cursor:pointer;margin-top:auto;
-  -webkit-transition:opacity .15s,-webkit-transform .1s;transition:opacity .15s,transform .1s;
-}
+  -webkit-transition:opacity .15s,-webkit-transform .1s;transition:opacity .15s,transform .1s}
 .process-btn:hover{opacity:.88}
 .process-btn:active{-webkit-transform:scale(.98);transform:scale(.98)}
 .process-btn:disabled{opacity:.35;cursor:not-allowed}
 
-/* ─── Main ───────────────────────────────────────────────────────────────── */
-main{
-  -webkit-box-flex:1;-ms-flex:1;flex:1;
-  display:-webkit-box;display:-ms-flexbox;display:flex;
-  -webkit-box-orient:vertical;-webkit-box-direction:normal;
-  -ms-flex-direction:column;flex-direction:column;
-  overflow:hidden;min-width:0;
-}
-
-/* Toolbar */
+/* ─── Toolbar ────────────────────────────────────────────────────────── */
 .toolbar{
   display:-webkit-box;display:-ms-flexbox;display:flex;
   -webkit-box-align:center;-ms-flex-align:center;align-items:center;
-  gap:10px;padding:10px 18px;
-  border-bottom:1px solid var(--border);background:var(--surf);
-  -ms-flex-negative:0;flex-shrink:0;
-}
-.tinfo{
-  font-family:var(--mono);font-size:11px;color:var(--muted);
-  display:-webkit-box;display:-ms-flexbox;display:flex;gap:16px;
-}
-.tinfo b{color:var(--text);font-weight:400}
+  gap:8px;padding:8px 16px;
+  border-bottom:1px solid var(--brd);background:var(--surf);
+  -ms-flex-negative:0;flex-shrink:0;min-width:0}
+.tinfo{font-family:var(--mono);font-size:11px;color:var(--mut);
+  display:-webkit-box;display:-ms-flexbox;display:flex;gap:14px;
+  overflow:hidden;white-space:nowrap}
+.tinfo b{color:var(--txt);font-weight:400}
 .tb-btn{
-  margin-left:auto;padding:6px 14px;background:var(--surf2);
-  border:1px solid var(--border);border-radius:6px;color:var(--text);
-  font-size:12px;font-family:var(--mono);cursor:pointer;text-decoration:none;
+  margin-left:auto;-ms-flex-negative:0;flex-shrink:0;
+  padding:5px 12px;background:var(--surf2);
+  border:1px solid var(--brd);border-radius:6px;color:var(--txt);
+  font-size:11px;font-family:var(--mono);cursor:pointer;text-decoration:none;
   display:-webkit-inline-box;display:-ms-inline-flexbox;display:inline-flex;
-  -webkit-box-align:center;-ms-flex-align:center;align-items:center;gap:5px;
-  -webkit-transition:border-color .15s,color .15s;transition:border-color .15s,color .15s;
-}
-.tb-btn:hover{border-color:var(--accent2);color:var(--accent2)}
+  -webkit-box-align:center;-ms-flex-align:center;align-items:center;gap:4px;
+  -webkit-transition:border-color .15s,color .15s;transition:border-color .15s,color .15s}
+.tb-btn:hover{border-color:var(--acc2);color:var(--acc2)}
 .tb-btn.off{opacity:.35;pointer-events:none}
 
-/* View tabs */
+/* ─── View tabs ──────────────────────────────────────────────────────── */
 .view-tabs{
   display:-webkit-box;display:-ms-flexbox;display:flex;
-  gap:2px;padding:8px 16px 0;
-  background:var(--surf);border-bottom:1px solid var(--border);
-  -ms-flex-negative:0;flex-shrink:0;
-}
+  gap:2px;padding:7px 14px 0;
+  background:var(--surf);border-bottom:1px solid var(--brd);
+  -ms-flex-negative:0;flex-shrink:0}
 .vtab{
   font-family:var(--mono);font-size:10px;letter-spacing:.08em;
-  padding:6px 14px;border-radius:6px 6px 0 0;
+  padding:5px 12px;border-radius:6px 6px 0 0;
   border:1px solid transparent;border-bottom:none;
-  cursor:pointer;color:var(--muted);background:transparent;
-  -webkit-transition:color .15s;transition:color .15s;
-}
-.vtab:hover{color:var(--text)}
-.vtab.on{color:var(--accent);background:var(--bg);border-color:var(--border)}
+  cursor:pointer;color:var(--mut);background:transparent;
+  -webkit-transition:color .15s;transition:color .15s}
+.vtab:hover{color:var(--txt)}
+.vtab.on{color:var(--acc);background:var(--bg);border-color:var(--brd)}
 
-/* ─── Panels container ───────────────────────────────────────────────────── */
-.panels{
-  -webkit-box-flex:1;-ms-flex:1;flex:1;
-  position:relative;overflow:hidden;min-height:0;
-}
+/* ─── Panels ─────────────────────────────────────────────────────────── */
+.panels{-webkit-box-flex:1;-ms-flex:1;flex:1;position:relative;overflow:hidden;min-height:0}
+.panel{position:absolute;top:0;left:0;right:0;bottom:0;overflow:hidden}
 
-/* All panels: absolute fill, hidden by default */
-.panel{
-  position:absolute;top:0;left:0;right:0;bottom:0;
-  /* display:none until .on — set via JS style, not CSS, for IE compat */
-  overflow:hidden;
-}
-
-/* ── Empty panel ── */
+/* empty */
 #p-empty{
   display:-webkit-box;display:-ms-flexbox;display:flex;
   -webkit-box-align:center;-ms-flex-align:center;align-items:center;
   -webkit-box-pack:center;-ms-flex-pack:center;justify-content:center;
-  text-align:center;color:var(--muted);
-}
-.empty-ico{font-size:52px;line-height:1;margin-bottom:14px;opacity:.25}
-#p-empty p{font-size:14px;line-height:1.8}
-#p-empty strong{color:var(--text)}
+  text-align:center;color:var(--mut)}
+.empty-ico{font-size:48px;line-height:1;margin-bottom:12px;opacity:.25}
+#p-empty p{font-size:13px;line-height:1.8}
+#p-empty strong{color:var(--txt)}
 
-/* ── Split panel ── */
+/* split */
 #p-split{
   display:-webkit-box;display:-ms-flexbox;display:flex;
   -webkit-box-orient:horizontal;-webkit-box-direction:normal;
-  -ms-flex-direction:row;flex-direction:row;
-}
+  -ms-flex-direction:row;flex-direction:row}
 .sp{
   -webkit-box-flex:1;-ms-flex:1;flex:1;min-width:0;
   display:-webkit-box;display:-ms-flexbox;display:flex;
   -webkit-box-orient:vertical;-webkit-box-direction:normal;
   -ms-flex-direction:column;flex-direction:column;
-  border-right:1px solid var(--border);overflow:hidden;
-}
+  border-right:1px solid var(--brd);overflow:hidden}
 .sp:last-child{border-right:none}
-.sp-lbl{
-  font-family:var(--mono);font-size:10px;letter-spacing:.1em;
-  color:var(--muted);padding:8px 14px;
-  border-bottom:1px solid var(--border);
-  -ms-flex-negative:0;flex-shrink:0;
-}
-.sp-body{
-  -webkit-box-flex:1;-ms-flex:1;flex:1;
+.sp-lbl{font-family:var(--mono);font-size:9px;letter-spacing:.1em;
+  color:var(--mut);padding:6px 12px;
+  border-bottom:1px solid var(--brd);-ms-flex-negative:0;flex-shrink:0}
+.sp-body{-webkit-box-flex:1;-ms-flex:1;flex:1;min-height:0;
   display:-webkit-box;display:-ms-flexbox;display:flex;
   -webkit-box-align:center;-ms-flex-align:center;align-items:center;
   -webkit-box-pack:center;-ms-flex-pack:center;justify-content:center;
-  padding:20px;overflow:auto;min-height:0;
-}
+  padding:16px;overflow:auto}
 
-/* ── Result / Original single panels ── */
+/* single panels */
 #p-result,#p-original{
   display:-webkit-box;display:-ms-flexbox;display:flex;
   -webkit-box-align:center;-ms-flex-align:center;align-items:center;
   -webkit-box-pack:center;-ms-flex-pack:center;justify-content:center;
-  padding:28px;overflow:auto;
-}
+  padding:24px;overflow:auto}
 
-/* Shared image/svg styles */
-.pimg{
-  display:block;
-  max-width:100%;max-height:100%;
+/* shared img/svg */
+.pimg,.psvg{
+  display:block;max-width:100%;max-height:100%;
   width:auto;height:auto;
-  border-radius:var(--r);border:1px solid var(--border);
-  -ms-flex-negative:1;flex-shrink:1;object-fit:contain;
-}
-.psvg{
-  display:block;
-  max-width:100%;max-height:100%;
-  width:auto;height:auto;
-  border-radius:var(--r);border:1px solid var(--border);
-  background:#fff;-ms-flex-negative:1;flex-shrink:1;
-}
+  border-radius:var(--r);border:1px solid var(--brd);
+  -ms-flex-negative:1;flex-shrink:1;object-fit:contain}
+.psvg{background:#fff}
 
-/* Loading overlay */
+/* Loading */
 .overlay{
   position:absolute;top:0;left:0;right:0;bottom:0;
   background:rgba(14,14,16,.85);
@@ -320,43 +270,57 @@ main{
   -webkit-box-align:center;-ms-flex-align:center;align-items:center;
   -webkit-box-pack:center;-ms-flex-pack:center;justify-content:center;
   -webkit-box-orient:vertical;-webkit-box-direction:normal;
-  -ms-flex-direction:column;flex-direction:column;
-  gap:14px;z-index:10;
-}
-.spin{
-  width:34px;height:34px;border:2px solid var(--border);
-  border-top-color:var(--accent);border-radius:50%;
-  -webkit-animation:spin .7s linear infinite;animation:spin .7s linear infinite;
-}
+  -ms-flex-direction:column;flex-direction:column;gap:12px;z-index:10}
+.spin{width:32px;height:32px;border:2px solid var(--brd);
+  border-top-color:var(--acc);border-radius:50%;
+  -webkit-animation:spin .7s linear infinite;animation:spin .7s linear infinite}
 @-webkit-keyframes spin{to{-webkit-transform:rotate(360deg)}}
 @keyframes spin{to{transform:rotate(360deg)}}
-.spin-txt{font-family:var(--mono);font-size:11px;color:var(--accent);letter-spacing:.08em}
+.spin-txt{font-family:var(--mono);font-size:11px;color:var(--acc);letter-spacing:.08em}
 
 /* Toast */
 .toast{
-  position:fixed;bottom:22px;right:22px;
-  background:var(--surf2);border:1px solid var(--border);
-  border-radius:var(--r);padding:11px 16px;font-size:13px;color:var(--text);
-  z-index:999;max-width:300px;pointer-events:none;
+  position:fixed;bottom:20px;right:20px;
+  background:var(--surf2);border:1px solid var(--brd);
+  border-radius:var(--r);padding:10px 14px;font-size:12px;color:var(--txt);
+  z-index:999;max-width:280px;pointer-events:none;
   -webkit-transform:translateY(70px);transform:translateY(70px);opacity:0;
-  -webkit-transition:-webkit-transform .25s,opacity .25s;transition:transform .25s,opacity .25s;
-}
+  -webkit-transition:-webkit-transform .25s,opacity .25s;transition:transform .25s,opacity .25s}
 .toast.on{-webkit-transform:none;transform:none;opacity:1}
-.toast.ok{border-color:var(--accent)}
-.toast.err{border-color:var(--danger);color:var(--danger)}
+.toast.ok{border-color:var(--acc)}.toast.err{border-color:var(--err);color:var(--err)}
 
-/* Scrollbar (webkit) */
-::-webkit-scrollbar{width:5px;height:5px}
+::-webkit-scrollbar{width:4px;height:4px}
 ::-webkit-scrollbar-track{background:transparent}
-::-webkit-scrollbar-thumb{background:var(--border);border-radius:4px}
+::-webkit-scrollbar-thumb{background:var(--brd);border-radius:4px}
+
+/* ─── Mobile ─────────────────────────────────────────────────────────── */
+@media(max-width:700px){
+  .menu-btn{display:block}
+  .hd-status{display:none}
+
+  aside{
+    position:fixed;top:0;left:0;bottom:0;
+    width:min(var(--aside-w), 85vw);
+    -webkit-transform:translateX(-110%);transform:translateX(-110%);
+    padding-top:60px;box-shadow:4px 0 24px rgba(0,0,0,.5)}
+  aside.open{-webkit-transform:none;transform:none}
+
+  /* split → stacked on mobile */
+  #p-split{-webkit-box-orient:vertical;-webkit-box-direction:normal;
+    -ms-flex-direction:column;flex-direction:column}
+  .sp{border-right:none;border-bottom:1px solid var(--brd)}
+  .sp:last-child{border-bottom:none}
+
+  .tinfo span:nth-child(n+3){display:none}
+}
 </style>
 </head>
 <body>
 
-<!-- ── Header ─────────────────────────────────────────────────────────────── -->
 <header>
   <div class="logo">WAVE<span>print</span></div>
   <span class="badge">ALPHA</span>
+  <button class="menu-btn" id="menu-btn" aria-label="Меню">☰</button>
   <div class="hd-status">
     <div class="dot" id="dot"></div>
     <span id="srv-txt">connecting…</span>
@@ -365,440 +329,455 @@ main{
 
 <div class="app-row">
 
-<!-- ── Sidebar ────────────────────────────────────────────────────────────── -->
-<aside>
-  <section>
-    <div class="slabel">Изображение</div>
-    <div class="upload-zone" id="upload-zone">
-      <input type="file" id="file-input" accept=".jpg,.jpeg,.png,.bmp,.webp"/>
-      <div class="upload-icon">⬆</div>
-      <p><strong>Перетащи или кликни</strong><br/>JPG PNG BMP WEBP · до 20 МБ</p>
-    </div>
-    <div class="thumb-wrap" id="thumb-wrap">
-      <img id="thumb" src="" alt="preview"/>
-      <button class="thumb-clear" id="thumb-clear" title="Удалить">✕</button>
-    </div>
-  </section>
+  <!-- Mobile backdrop -->
+  <div class="backdrop" id="backdrop"></div>
 
-  <section>
-    <div class="slabel">Режим</div>
-    <div class="mode-grid" id="mode-grid"></div>
-  </section>
-
-  <section>
-    <div class="slabel">Настройки</div>
-    <div id="params-area"></div>
-  </section>
-
-  <button class="process-btn" id="process-btn" disabled>▶ ОБРАБОТАТЬ</button>
-</aside>
-
-<!-- ── Main ───────────────────────────────────────────────────────────────── -->
-<main>
-  <!-- Toolbar -->
-  <div class="toolbar">
-    <div class="tinfo">
-      <span>режим: <b id="i-mode">—</b></span>
-      <span>линий: <b id="i-lines">—</b></span>
-      <span>время: <b id="i-time">—</b></span>
-    </div>
-    <a class="tb-btn off" id="dl-btn">↓ SVG</a>
-  </div>
-
-  <!-- View tabs (hidden until first result) -->
-  <div class="view-tabs" id="view-tabs" style="display:none">
-    <button class="vtab on" data-panel="p-split">SPLIT</button>
-    <button class="vtab"    data-panel="p-result">РЕЗУЛЬТАТ</button>
-    <button class="vtab"    data-panel="p-original">ОРИГИНАЛ</button>
-  </div>
-
-  <!-- Panels -->
-  <div class="panels" id="panels">
-
-    <!-- Empty state -->
-    <div class="panel" id="p-empty">
-      <div>
-        <div class="empty-ico">✏</div>
-        <p>Загрузи фото и выбери режим,<br/>затем нажми <strong>Обработать</strong></p>
+  <!-- ── Sidebar ────────────────────────────────────────────────────── -->
+  <aside id="aside">
+    <section>
+      <div class="slabel">Изображение</div>
+      <div class="upload-zone" id="upload-zone">
+        <input type="file" id="file-input" accept=".jpg,.jpeg,.png,.bmp,.webp"/>
+        <div class="upload-icon">⬆</div>
+        <p><strong>Перетащи или кликни</strong><br/>JPG PNG BMP WEBP · до 20 МБ</p>
       </div>
+      <div class="thumb-wrap" id="thumb-wrap">
+        <img id="thumb" src="" alt="preview"/>
+        <button class="thumb-clear" id="thumb-clear" title="Удалить">✕</button>
+      </div>
+    </section>
+
+    <section>
+      <div class="slabel">Режим</div>
+      <div class="mode-grid" id="mode-grid"></div>
+    </section>
+
+    <section>
+      <div class="slabel">Настройки</div>
+      <div id="params-area"></div>
+    </section>
+
+    <button class="process-btn" id="process-btn" disabled>▶ ОБРАБОТАТЬ</button>
+  </aside>
+
+  <!-- ── Main ───────────────────────────────────────────────────────── -->
+  <main>
+    <div class="toolbar">
+      <div class="tinfo">
+        <span>режим: <b id="i-mode">—</b></span>
+        <span>линий: <b id="i-lines">—</b></span>
+        <span>время: <b id="i-time">—</b></span>
+      </div>
+      <a class="tb-btn off" id="dl-btn">↓ SVG</a>
     </div>
 
-    <!-- SPLIT: оригинал | результат -->
-    <div class="panel" id="p-split">
-      <div class="sp">
-        <div class="sp-lbl">ОРИГИНАЛ</div>
-        <div class="sp-body">
-          <img class="pimg" id="orig-split" src="" alt="original"/>
+    <div class="view-tabs" id="view-tabs" style="display:none">
+      <button class="vtab on"  data-panel="p-split">SPLIT</button>
+      <button class="vtab"     data-panel="p-result">РЕЗУЛЬТАТ</button>
+      <button class="vtab"     data-panel="p-original">ОРИГИНАЛ</button>
+    </div>
+
+    <div class="panels">
+
+      <div class="panel" id="p-empty">
+        <div>
+          <div class="empty-ico">✏</div>
+          <p>Загрузи фото и выбери режим,<br/>затем нажми <strong>Обработать</strong></p>
         </div>
       </div>
-      <div class="sp">
-        <div class="sp-lbl">РЕЗУЛЬТАТ · SVG</div>
-        <div class="sp-body">
-          <svg class="psvg" id="svg-split" xmlns="http://www.w3.org/2000/svg"></svg>
+
+      <div class="panel" id="p-split">
+        <div class="sp">
+          <div class="sp-lbl">ОРИГИНАЛ</div>
+          <div class="sp-body">
+            <img class="pimg" id="orig-split" src="" alt="original"/>
+          </div>
+        </div>
+        <div class="sp">
+          <div class="sp-lbl">РЕЗУЛЬТАТ · SVG</div>
+          <div class="sp-body">
+            <svg class="psvg" id="svg-split" xmlns="http://www.w3.org/2000/svg"></svg>
+          </div>
         </div>
       </div>
-    </div>
 
-    <!-- РЕЗУЛЬТАТ only -->
-    <div class="panel" id="p-result">
-      <svg class="psvg" id="svg-result" xmlns="http://www.w3.org/2000/svg"></svg>
-    </div>
+      <div class="panel" id="p-result">
+        <svg class="psvg" id="svg-result" xmlns="http://www.w3.org/2000/svg"></svg>
+      </div>
 
-    <!-- ОРИГИНАЛ only -->
-    <div class="panel" id="p-original">
-      <img class="pimg" id="orig-full" src="" alt="original"/>
-    </div>
+      <div class="panel" id="p-original">
+        <img class="pimg" id="orig-full" src="" alt="original"/>
+      </div>
 
-    <!-- Loading overlay (covers all panels) -->
-    <div class="overlay" id="overlay" style="display:none">
-      <div class="spin"></div>
-      <div class="spin-txt" id="spin-txt">ОБРАБОТКА…</div>
-    </div>
+      <div class="overlay" id="overlay" style="display:none">
+        <div class="spin"></div>
+        <div class="spin-txt" id="spin-txt">ОБРАБОТКА…</div>
+      </div>
 
-  </div><!-- /panels -->
-</main>
+    </div><!-- /panels -->
+  </main>
 
 </div><!-- /app-row -->
 
 <div class="toast" id="toast"></div>
 
 <script>
-/* jshint esversion:5 */
+/* ES5 for max compatibility */
 'use strict';
 
 var API = 'http://localhost:5000/api';
 
-var MODE_META = {
-  contour:   {e:'✏', d:'Контуры краёв объектов'},
-  hatching:  {e:'≡', d:'Параллельная штриховка'},
-  stippling: {e:'·', d:'Точечное заполнение'},
-  flowfield: {e:'∿', d:'Линии поля потока'},
+var MODE_ICONS = {
+  contour:'✏', hatching:'≡', stippling:'·', flowfield:'∿',
+  voronoi:'⬡', spiral:'🌀', wave:'∿∿', sketch:'✍'
+};
+var MODE_DESC = {
+  contour:'Контуры краёв',  hatching:'Штриховка',
+  stippling:'Точки/штрихи', flowfield:'Поле потока',
+  voronoi:'Вороной',        spiral:'Спираль',
+  wave:'Волны',             sketch:'Набросок'
 };
 
 var state = {
-  imageId:   null,
-  origSrc:   null,
-  mode:      'contour',
-  params:    {},
-  modesData: null,
-  busy:      false,
+  imageId:null, origSrc:null, mode:'contour',
+  params:{}, modesData:null, busy:false
 };
 
-/* ── Helpers: show/hide with display style ─────────────────────────────── */
-function show(el, disp) {
-  el.style.display = disp || 'flex';
-}
-function hide(el) {
-  el.style.display = 'none';
+/* ── Mobile sidebar ─────────────────────────────────────────────────── */
+var aside    = document.getElementById('aside');
+var backdrop = document.getElementById('backdrop');
+
+document.getElementById('menu-btn').addEventListener('click', function() {
+  aside.classList.toggle('open');
+  backdrop.classList.toggle('show');
+});
+backdrop.addEventListener('click', closeSidebar);
+
+function closeSidebar() {
+  aside.classList.remove('open');
+  backdrop.classList.remove('show');
 }
 
-/* ── Panel switcher ────────────────────────────────────────────────────── */
-var PANELS = ['p-empty','p-split','p-result','p-original'];
-var currentPanel = 'p-empty';
+/* ── Panel switcher ─────────────────────────────────────────────────── */
+var ALL_PANELS = ['p-empty','p-split','p-result','p-original'];
 
 function showPanel(id) {
-  for (var i = 0; i < PANELS.length; i++) {
-    var el = document.getElementById(PANELS[i]);
-    if (el) hide(el);
+  for (var i=0;i<ALL_PANELS.length;i++) {
+    var el = document.getElementById(ALL_PANELS[i]);
+    if (el) el.style.display = 'none';
   }
-  var next = document.getElementById(id);
-  if (next) show(next, (id === 'p-split') ? 'flex' : 'flex');
-  currentPanel = id;
-
-  /* update tab highlights */
+  var nx = document.getElementById(id);
+  if (nx) nx.style.display = 'flex';
   var tabs = document.querySelectorAll('.vtab');
-  for (var t = 0; t < tabs.length; t++) {
-    var active = tabs[t].getAttribute('data-panel') === id;
-    tabs[t].className = active ? 'vtab on' : 'vtab';
+  for (var t=0;t<tabs.length;t++) {
+    var on = tabs[t].getAttribute('data-panel') === id;
+    tabs[t].className = on ? 'vtab on' : 'vtab';
   }
 }
 
-/* Wire tab buttons */
 (function() {
   var tabs = document.querySelectorAll('.vtab');
-  for (var i = 0; i < tabs.length; i++) {
-    (function(btn) {
+  for (var i=0;i<tabs.length;i++) {
+    (function(btn){
       btn.addEventListener('click', function() {
         showPanel(btn.getAttribute('data-panel'));
+        /* close sidebar on mobile after tab tap */
+        closeSidebar();
       });
     })(tabs[i]);
   }
 })();
 
-/* Initial state: show empty panel */
 showPanel('p-empty');
 
-/* ── Init ──────────────────────────────────────────────────────────────── */
+/* ── Init ───────────────────────────────────────────────────────────── */
 function init() {
-  fetch(API + '/modes')
-    .then(function(r) { return r.json(); })
-    .then(function(data) {
-      state.modesData = data;
-      state.params = JSON.parse(JSON.stringify(data.defaults));
+  fetch(API+'/modes')
+    .then(function(r){return r.json();})
+    .then(function(d){
+      state.modesData = d;
+      state.params    = JSON.parse(JSON.stringify(d.defaults));
       renderModes();
       renderParams();
-      return fetch(API + '/health');
+      return fetch(API+'/health');
     })
-    .then(function() { setDot('ok', 'сервер готов'); })
-    .catch(function() {
-      setDot('err', 'сервер недоступен');
-      showToast('Запусти server.py на localhost:5000', 'err');
+    .then(function(){setDot('ok','сервер готов');})
+    .catch(function(){
+      setDot('err','сервер недоступен');
+      showToast('Запусти server.py на localhost:5000','err');
     });
 }
-
-function setDot(cls, txt) {
-  document.getElementById('dot').className = 'dot ' + cls;
-  document.getElementById('srv-txt').textContent = txt;
+function setDot(cls,txt){
+  document.getElementById('dot').className='dot '+cls;
+  document.getElementById('srv-txt').textContent=txt;
 }
 
-/* ── Upload ────────────────────────────────────────────────────────────── */
+/* ── Upload ─────────────────────────────────────────────────────────── */
 var uploadZone = document.getElementById('upload-zone');
 var fileInput  = document.getElementById('file-input');
 var thumbWrap  = document.getElementById('thumb-wrap');
 var thumbImg   = document.getElementById('thumb');
 
-uploadZone.addEventListener('dragover', function(e) {
-  e.preventDefault();
-  uploadZone.classList.add('drag');
+uploadZone.addEventListener('dragover', function(e){
+  e.preventDefault(); uploadZone.classList.add('drag');});
+uploadZone.addEventListener('dragleave', function(){
+  uploadZone.classList.remove('drag');});
+uploadZone.addEventListener('drop', function(e){
+  e.preventDefault(); uploadZone.classList.remove('drag');
+  if (e.dataTransfer&&e.dataTransfer.files[0]) handleFile(e.dataTransfer.files[0]);
 });
-uploadZone.addEventListener('dragleave', function() {
-  uploadZone.classList.remove('drag');
-});
-uploadZone.addEventListener('drop', function(e) {
-  e.preventDefault();
-  uploadZone.classList.remove('drag');
-  if (e.dataTransfer && e.dataTransfer.files[0]) handleFile(e.dataTransfer.files[0]);
-});
-fileInput.addEventListener('change', function() {
+fileInput.addEventListener('change', function(){
   if (fileInput.files[0]) handleFile(fileInput.files[0]);
 });
-document.getElementById('thumb-clear').addEventListener('click', function() {
-  state.imageId = null;
-  state.origSrc = null;
-  thumbWrap.style.display = 'none';
-  show(uploadZone, 'block');
-  fileInput.value = '';
+document.getElementById('thumb-clear').addEventListener('click', function(){
+  state.imageId=null; state.origSrc=null;
+  thumbWrap.style.display='none';
+  uploadZone.style.display='';
+  fileInput.value='';
   updateBtn();
 });
 
 function handleFile(file) {
-  var fd = new FormData();
-  fd.append('file', file);
-  uploadZone.style.display = 'none';
-  thumbWrap.style.display = 'block';
-  /* immediate local preview */
-  var URL = window.URL || window.webkitURL;
-  thumbImg.src = URL.createObjectURL(file);
+  var fd = new FormData(); fd.append('file',file);
+  uploadZone.style.display='none';
+  thumbWrap.style.display='block';
+  var URL2 = window.URL||window.webkitURL;
+  thumbImg.src = URL2.createObjectURL(file);
 
-  fetch(API + '/upload', {method:'POST', body:fd})
-    .then(function(r) { return r.json(); })
-    .then(function(data) {
-      if (data.error) throw new Error(data.error);
-      state.imageId = data.image_id;
-      state.origSrc = data.thumbnail;
-      thumbImg.src  = data.thumbnail;
-      showToast('Загружено: ' + data.filename + ' (' + data.size[0] + '×' + data.size[1] + ')', 'ok');
+  fetch(API+'/upload',{method:'POST',body:fd})
+    .then(function(r){return r.json();})
+    .then(function(d){
+      if (d.error) throw new Error(d.error);
+      state.imageId=d.image_id; state.origSrc=d.thumbnail;
+      thumbImg.src=d.thumbnail;
+      showToast('Загружено: '+d.filename+' ('+d.size[0]+'×'+d.size[1]+')','ok');
     })
-    .catch(function(e) {
-      showToast(e.message, 'err');
-      thumbWrap.style.display = 'none';
-      show(uploadZone, 'block');
+    .catch(function(e){
+      showToast(e.message,'err');
+      thumbWrap.style.display='none'; uploadZone.style.display='';
     })
-    .then(function() { updateBtn(); });
+    .then(function(){updateBtn();});
 }
 
-/* ── Modes ─────────────────────────────────────────────────────────────── */
+/* ── Modes ──────────────────────────────────────────────────────────── */
+/* ── Reset result when mode changes ──────────────────────────────────── */
+function resetResult() {
+  /* Clear both SVG targets — only innerHTML, keep class/xmlns attrs */
+  var svgIds = ['svg-split', 'svg-result'];
+  for (var i = 0; i < svgIds.length; i++) {
+    var el = document.getElementById(svgIds[i]);
+    if (el) {
+      el.innerHTML = '';
+      el.removeAttribute('viewBox');
+      el.removeAttribute('style');
+    }
+  }
+  /* Reset original images */
+  var origIds = ['orig-split','orig-full'];
+  for (var oi = 0; oi < origIds.length; oi++) {
+    var img = document.getElementById(origIds[oi]);
+    if (img) { img.src = ''; img.style.display = 'none'; }
+  }
+  /* Hide tabs, go back to empty panel */
+  document.getElementById('view-tabs').style.display = 'none';
+  showPanel('p-empty');
+  /* Reset toolbar */
+  document.getElementById('i-mode').textContent  = '—';
+  document.getElementById('i-lines').textContent = '—';
+  document.getElementById('i-time').textContent  = '—';
+  /* Disable download button */
+  document.getElementById('dl-btn').className = 'tb-btn off';
+  document.getElementById('dl-btn').removeAttribute('href');
+  document.getElementById('dl-btn').removeAttribute('download');
+}
+
 function renderModes() {
   var grid  = document.getElementById('mode-grid');
   grid.innerHTML = '';
-  var modes = (state.modesData && state.modesData.modes) || [];
-  for (var i = 0; i < modes.length; i++) {
-    (function(m) {
-      var info = MODE_META[m] || {};
-      var btn  = document.createElement('button');
-      btn.className = 'mode-btn' + (m === state.mode ? ' active' : '');
-      btn.innerHTML = '<span class="mn">' + (info.e||'') + ' ' + m + '</span>'
-                    + '<span class="md">' + (info.d||'') + '</span>';
-      btn.addEventListener('click', function() {
-        state.mode = m; renderModes(); renderParams();
+  var modes = (state.modesData&&state.modesData.modes)||[];
+  for (var i=0;i<modes.length;i++) {
+    (function(m){
+      var btn = document.createElement('button');
+      btn.className = 'mode-btn'+(m===state.mode?' active':'');
+      btn.innerHTML = '<span class="mn">'+(MODE_ICONS[m]||'')+'&nbsp;'+m+'</span>'
+                    + '<span class="md">'+(MODE_DESC[m]||'')+'</span>';
+      btn.addEventListener('click',function(){
+        if (state.mode === m) return;   /* уже выбран — ничего не делать */
+        state.mode=m; renderModes(); renderParams(); resetResult();
       });
       grid.appendChild(btn);
     })(modes[i]);
   }
 }
 
-/* ── Params ────────────────────────────────────────────────────────────── */
+/* ── Params ─────────────────────────────────────────────────────────── */
 function renderParams() {
   var area = document.getElementById('params-area');
   area.innerHTML = '';
   if (!state.modesData) return;
-  var meta = state.modesData.meta[state.mode]     || [];
-  var defs = state.modesData.defaults[state.mode] || {};
+  var meta = state.modesData.meta[state.mode]||[];
+  var defs = state.modesData.defaults[state.mode]||{};
   if (!state.params[state.mode])
-    state.params[state.mode] = JSON.parse(JSON.stringify(defs));
+    state.params[state.mode]=JSON.parse(JSON.stringify(defs));
   var p = state.params[state.mode];
 
-  for (var i = 0; i < meta.length; i++) {
-    (function(m) {
-      if (p[m.key] === undefined) p[m.key] = defs[m.key];
-      var row = document.createElement('div');
-      row.className = 'param-row';
-
-      if (m.type === 'bool') {
-        var val = !!p[m.key];
-        row.innerHTML =
-          '<div class="toggle-row"><div class="toggle-wrap">'
-          + '<div class="toggle' + (val ? ' on' : '') + '"></div>'
-          + '<label>' + m.label + '</label>'
-          + '</div></div>'
-          + '<div class="param-tip">' + (m.tip||'') + '</div>';
-        (function(key, toggleEl) {
-          toggleEl.addEventListener('click', function() {
-            p[key] = !p[key];
-            toggleEl.className = 'toggle' + (p[key] ? ' on' : '');
+  for (var i=0;i<meta.length;i++) {
+    (function(m){
+      if (p[m.key]===undefined) p[m.key]=defs[m.key];
+      var row=document.createElement('div');
+      row.className='param-row';
+      if (m.type==='bool') {
+        var val=!!p[m.key];
+        row.innerHTML='<div class="toggle-row"><div class="toggle-wrap">'
+          +'<div class="toggle'+(val?' on':'')+'"></div>'
+          +'<label>'+m.label+'</label>'
+          +'</div></div>'
+          +'<div class="param-tip">'+(m.tip||'')+'</div>';
+        (function(key,tog){
+          tog.addEventListener('click',function(){
+            p[key]=!p[key];
+            tog.className='toggle'+(p[key]?' on':'');
           });
-        })(m.key, row.querySelector('.toggle'));
-
+        })(m.key,row.querySelector('.toggle'));
       } else {
-        var cur = (p[m.key] !== undefined) ? p[m.key] : m.min;
-        var vid = 'pv-' + m.key;
-        row.innerHTML =
-          '<div class="param-head"><label>' + m.label + '</label>'
-          + '<span class="param-val" id="' + vid + '">' + cur + '</span></div>'
-          + '<input type="range" min="' + m.min + '" max="' + m.max
-          + '" step="' + m.step + '" value="' + cur + '"/>'
-          + '<div class="param-tip">' + (m.tip||'') + '</div>';
-        (function(key, valId) {
-          row.querySelector('input').addEventListener('input', function() {
-            var v = parseFloat(this.value);
-            p[key] = v;
-            document.getElementById(valId).textContent = v;
+        var cur=(p[m.key]!==undefined)?p[m.key]:m.min;
+        var vid='pv-'+m.key;
+        row.innerHTML='<div class="param-head"><label>'+m.label+'</label>'
+          +'<span class="param-val" id="'+vid+'">'+cur+'</span></div>'
+          +'<input type="range" min="'+m.min+'" max="'+m.max
+          +'" step="'+m.step+'" value="'+cur+'"/>'
+          +'<div class="param-tip">'+(m.tip||'')+'</div>';
+        (function(key,valId){
+          row.querySelector('input').addEventListener('input',function(){
+            var v=parseFloat(this.value); p[key]=v;
+            document.getElementById(valId).textContent=v;
           });
-        })(m.key, vid);
+        })(m.key,vid);
       }
       area.appendChild(row);
     })(meta[i]);
   }
 }
 
-/* ── SVG helpers ───────────────────────────────────────────────────────── */
+/* ── SVG helpers ────────────────────────────────────────────────────── */
 function parseSvg(txt) {
+  /* Guard: return null on empty/invalid */
+  if (!txt || typeof txt !== 'string' || txt.trim().length < 10) return null;
   var parser = new DOMParser();
-  var doc = parser.parseFromString(txt, 'image/svg+xml');
-  /* check for parse error */
+  var doc;
+  try { doc = parser.parseFromString(txt, 'image/svg+xml'); }
+  catch(e) { return null; }
+  /* DOMParser returns error doc on bad input */
   if (doc.querySelector('parsererror')) return null;
-  return doc.querySelector('svg');
+  var svg = doc.querySelector('svg');
+  return svg || null;
 }
 
-/**
- * Copy viewBox + content from `src` into `dst`.
- * Removes explicit width/height so CSS max-width/max-height controls size.
- */
 function fillSvg(dst, src) {
-  /* remove all existing attributes */
-  while (dst.attributes.length > 0) {
-    dst.removeAttribute(dst.attributes[0].name);
-  }
-  /* copy attributes from src */
-  for (var i = 0; i < src.attributes.length; i++) {
-    var a = src.attributes[i];
-    dst.setAttribute(a.name, a.value);
-  }
-  /* drop fixed dimensions — let CSS handle size */
+  /* Guard against null */
+  if (!src || !dst) return false;
+  /* Copy only viewBox from src — preserve class, xmlns, and other existing attrs */
+  var vb = src.getAttribute('viewBox');
+  if (vb) dst.setAttribute('viewBox', vb);
+  /* Ensure xmlns is set (required for correct namespace rendering) */
+  dst.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
+  /* Drop any leftover fixed dimensions so CSS controls the size */
   dst.removeAttribute('width');
   dst.removeAttribute('height');
-  /* copy content */
+  /* Replace content */
   dst.innerHTML = src.innerHTML;
+  return true;
 }
 
-/* ── Process ───────────────────────────────────────────────────────────── */
+/* ── Process ────────────────────────────────────────────────────────── */
 document.getElementById('process-btn').addEventListener('click', doProcess);
 
 function doProcess() {
-  if (!state.imageId || state.busy) return;
-  state.busy = true;
-  updateBtn();
+  if (!state.imageId||state.busy) return;
+  state.busy=true; updateBtn();
+
+  /* close sidebar on mobile when processing starts */
+  closeSidebar();
 
   var overlay = document.getElementById('overlay');
   var spinTxt = document.getElementById('spin-txt');
-  show(overlay, 'flex');
+  overlay.style.display='flex';
 
-  var steps = ['АНАЛИЗ ИЗОБРАЖЕНИЯ…','ТРАССИРОВКА ЛИНИЙ…','ОПТИМИЗАЦИЯ ПУТЕЙ…','ГЕНЕРАЦИЯ SVG…'];
-  var si = 0;
-  spinTxt.textContent = steps[0];
-  var timer = setInterval(function() {
-    si = (si + 1) % steps.length;
-    spinTxt.textContent = steps[si];
-  }, 900);
+  var steps=['АНАЛИЗ…','ТРАССИРОВКА…','ОПТИМИЗАЦИЯ…','ГЕНЕРАЦИЯ SVG…'];
+  var si=0; spinTxt.textContent=steps[0];
+  var timer=setInterval(function(){
+    si=(si+1)%steps.length; spinTxt.textContent=steps[si];
+  },900);
 
-  fetch(API + '/process', {
-    method:  'POST',
-    headers: {'Content-Type':'application/json'},
-    body: JSON.stringify({
-      image_id: state.imageId,
-      mode:     state.mode,
-      params:   state.params[state.mode] || {},
-    }),
+  fetch(API+'/process',{
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({
+      image_id:state.imageId,
+      mode:state.mode,
+      params:state.params[state.mode]||{}
+    })
   })
-  .then(function(r) { return r.json(); })
-  .then(function(data) {
+  .then(function(r){return r.json();})
+  .then(function(data){
     if (data.error) throw new Error(data.error);
 
+    /* ── Parse SVG — guard against null ── */
     var incoming = parseSvg(data.svg);
     if (!incoming) throw new Error('Сервер вернул невалидный SVG');
 
-    /* Fill both SVG elements */
+    /* Fill both SVG targets */
     fillSvg(document.getElementById('svg-split'),  incoming);
     fillSvg(document.getElementById('svg-result'), incoming);
 
-    /* Fill both original image elements */
-    var src = state.origSrc || '';
-    document.getElementById('orig-split').src = src;
-    document.getElementById('orig-full').src  = src;
+    /* Fill both original images */
+    var src = state.origSrc||'';
+    var os  = document.getElementById('orig-split');
+    var of2 = document.getElementById('orig-full');
+    if (src) { os.src=src; of2.src=src; }
+    os.style.display  = src ? '' : 'none';
+    of2.style.display = src ? '' : 'none';
 
-    /* Show tabs bar, switch to split view */
-    show(document.getElementById('view-tabs'), 'flex');
+    /* Show tabs + switch to split */
+    document.getElementById('view-tabs').style.display='flex';
     showPanel('p-split');
 
-    /* Toolbar info */
+    /* Info bar */
     document.getElementById('i-mode').textContent  = data.mode;
-    document.getElementById('i-lines').textContent = data.stroke_count.toLocaleString();
-    document.getElementById('i-time').textContent  = data.elapsed_s + 's';
+    document.getElementById('i-lines').textContent = (data.stroke_count||0).toLocaleString();
+    document.getElementById('i-time').textContent  = data.elapsed_s+'s';
 
     /* Download button */
-    var dl = document.getElementById('dl-btn');
-    dl.href      = API + '/download/' + data.svg_file;
-    dl.download  = data.svg_file;
-    dl.className = 'tb-btn';
+    var dl=document.getElementById('dl-btn');
+    dl.href=API+'/download/'+data.svg_file;
+    dl.download=data.svg_file;
+    dl.className='tb-btn';
 
-    showToast('Готово — ' + data.stroke_count.toLocaleString() + ' линий за ' + data.elapsed_s + 's', 'ok');
+    showToast('Готово — '+(data.stroke_count||0).toLocaleString()+' линий за '+data.elapsed_s+'s','ok');
   })
-  .catch(function(e) {
-    showToast(e.message, 'err');
-  })
-  .then(function() {
+  .catch(function(e){ showToast(e.message,'err'); })
+  .then(function(){
     clearInterval(timer);
-    hide(overlay);
-    state.busy = false;
-    updateBtn();
+    overlay.style.display='none';
+    state.busy=false; updateBtn();
   });
 }
 
-/* ── Helpers ───────────────────────────────────────────────────────────── */
+/* ── Helpers ────────────────────────────────────────────────────────── */
 function updateBtn() {
-  document.getElementById('process-btn').disabled = !state.imageId || state.busy;
+  document.getElementById('process-btn').disabled=!state.imageId||state.busy;
 }
 
 var toastTimer;
-function showToast(msg, type) {
-  var el = document.getElementById('toast');
-  el.textContent = msg;
-  el.className = 'toast on ' + (type || 'ok');
+function showToast(msg,type) {
+  var el=document.getElementById('toast');
+  el.textContent=msg;
+  el.className='toast on '+(type||'ok');
   clearTimeout(toastTimer);
-  toastTimer = setTimeout(function() { el.className = 'toast'; }, 3500);
+  toastTimer=setTimeout(function(){el.className='toast';},3500);
 }
 
-/* ── Boot ──────────────────────────────────────────────────────────────── */
+/* ── Boot ───────────────────────────────────────────────────────────── */
 init();
 </script>
 </body>
